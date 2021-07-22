@@ -17,7 +17,7 @@ export const postRegistrationError = "POST_REGISTRATION_ERROR";
 export const authUser = "CHECK_AUTH_USER";
 export const logOutUser = "LOGOUT_USER";
 
-export const fetchLoginRequest = createAction("POST_LOGIN_REQUEST")
+export const fetchLoginRequest = createAction("POST_LOGIN_REQUEST");
 export const fetchLoginSuccess = (userInfo) => {
     return {
         type: postLoginSuccess,
@@ -37,13 +37,13 @@ export const fetchRegistrationSuccess = (userInfo) => {
         type: postRegistrationSuccess,
         userInfo
     }
-}
+};
 export const fetchRegistrationError = (error) => {
     return {
         type: postRegistrationError,
         error
     }
-}
+};
 
 
 export const fetchFilmByIdRequest = createAction("GET_FILM_BY_ID_REQUEST");
@@ -62,6 +62,6 @@ export const fetchFilmByKeyWordSuccess = (films) => {
     }
 };
 
-export const checkAuthUser = createAction("CHECK_AUTH_USER")
-export const handleLogOutUser = createAction("LOGOUT_USER")
+export const checkAuthUser = createAction("CHECK_AUTH_USER");
+export const handleLogOutUser = createAction("LOGOUT_USER");
 

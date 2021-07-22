@@ -4,12 +4,14 @@ import Registration from "../registration/registration";
 import { useDispatch, useSelector } from "react-redux";
 import { postLoginAsync } from "../../actions";
 import { useHistory } from "react-router-dom";
+import SpinnerAuth from "../../img/spinner-auth.svg"
 
 function Auth() {
     const dispatch = useDispatch()
     const history = useHistory()
     const errorAuth = useSelector(state => state.errorAuth)
     const isAuth = useSelector(state => state.user.isAuth)
+    const isLoadingLogin = useSelector(state => state.user.isLoadingLogin)
     const [regist, setRegistr] = useState(false)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -48,8 +50,13 @@ function Auth() {
                         <input value={password} onChange={(e) => handlePassword(e.target.value)} placeholder="Password"/>
                     </div>
                     <div className="auth-btn">
-                        <button onClick={handleLogin}>Login</button>
-                        <button onClick={cancelHandleRegistration}>Registration</button>
+
+                        {isLoadingLogin ? <img src={SpinnerAuth} alt="spinner"/> :
+                            <>
+                                <button onClick={handleLogin}>Login</button>
+                                <button onClick={cancelHandleRegistration}>Registration</button>
+                            </>
+                        }
                     </div>
                 </div>
             }

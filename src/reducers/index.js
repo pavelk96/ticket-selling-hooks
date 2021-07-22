@@ -57,14 +57,15 @@ const reducer = (state = initialState, action) => {
             }
 
         case 'POST_LOGIN_SUCCESS' :
-            const {token} = action;
-            if (token) {
-                localStorage.setItem("token", token)
+            console.log(action)
+
+            if (action.userInfo.token) {
+                localStorage.setItem("token", action.userInfo.token)
             }
             return {
                 ...state,
                 user: {
-                    token: token,
+                    token: action.userInfo.token,
                     lastName: action.userInfo.user.firstName,
                     firstName: action.userInfo.user.lastName,
                     email: action.userInfo.user.email,
