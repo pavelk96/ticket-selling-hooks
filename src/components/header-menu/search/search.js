@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./search.sass"
-import { getFilmByKeyWordAsync } from "../../actions";
+import { getFilmByKeyWordAsync } from "../../../actions";
 
 function Search() {
     const dispatch = useDispatch();
