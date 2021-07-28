@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./registration.sass";
 import leftArrow from "../../img/left-arrow.svg"
 import { useDispatch, useSelector } from "react-redux";
-import { postRegistrationAsync } from "../../actions";
+import { postRegistrationAction, postRegistrationRequest } from "../../actions";
 
 function Registration(props) {
     const dispatch = useDispatch()
@@ -34,7 +34,7 @@ function Registration(props) {
     };
 
     const handleRegistration = () => {
-        dispatch({type: postRegistrationAsync, user:{ firstName, lastName, email, password }})
+        dispatch(postRegistrationAction.request({ firstName, lastName, email, password }))
     }
 
     return (

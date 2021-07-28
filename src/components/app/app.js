@@ -5,8 +5,9 @@ import SearchListPage from "../pages/search-list-page";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { authUser } from "../../actions";
+import { checkAuthUser } from "../../actions";
 import AuthRegistrationPage from "../pages/auth-registration-page";
+import CinemaHall from "../cinema-hall/cinema-hall-grid/cinema-hall";
 
 
 
@@ -16,13 +17,18 @@ function App() {
     const dispatch = useDispatch();
     const isAuth = useSelector(state => state.user.isAuth)
     useEffect(() => {
-        dispatch({type:authUser})
-    })
+        dispatch(checkAuthUser() )
+    }, [])
 
     const contentIsAuth =
          (
             <Switch>
                 <Route exact path="/search" component={SearchListPage}/>
+                <Route path="/buy-ticket/:id"
+                       render={({match}) => {
+                           const {id} = match.params
+                           return <CinemaHall id={id}/>;
+                       }}/>
                 <Route path="/film/:id"
                        render={({match}) => {
                            const {id} = match.params

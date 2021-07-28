@@ -10,7 +10,7 @@ function HeaderMenu() {
     const dispatch = useDispatch();
     const isAuth = useSelector(state => state.user.isAuth)
     const handleLogOut = () => {
-        dispatch({type: logOutUser})
+        dispatch(logOutUser())
         history.push("/login")
     }
     return (

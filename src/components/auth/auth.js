@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./auth.sass";
 import Registration from "../registration/registration";
 import { useDispatch, useSelector } from "react-redux";
-import { postLoginAsync } from "../../actions";
+import { postLoginAction, postLoginRequest } from "../../actions";
 import { useHistory } from "react-router-dom";
 import SpinnerAuth from "../../img/spinner-auth.svg"
 
@@ -28,7 +28,7 @@ function Auth() {
     }
 
     const handleLogin = () => {
-        dispatch({type: postLoginAsync, user:{email, password}})
+        dispatch(postLoginAction.request({email, password}))
     }
 
     if (isAuth) {

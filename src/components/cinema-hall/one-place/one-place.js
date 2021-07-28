@@ -8,11 +8,17 @@ function OnePlace(props) {
 
     });
 
+    const handlePlace = () => {
+        const arr = [...props.selectedPlace, props.placeId]
+        setPlaceSelected(!placeSelected)
+        props.setSelectedPlace(arr)
+    }
+
     const placeFreeClass = "one-place";
     const placeSelectedClass = "one-place-selected";
 
     return (
-            <div className={placeSelected ? placeSelectedClass : placeFreeClass} onClick={() => setPlaceSelected(!placeSelected)}>
+            <div className={placeSelected ? placeSelectedClass : placeFreeClass} onClick={handlePlace}>
                 {props.place}
             </div>
     );

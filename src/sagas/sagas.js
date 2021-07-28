@@ -1,61 +1,75 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, takeEvery } from 'redux-saga/effects'
 import KinopoiskService from "../services/kinopiosk-api";
 import {
-    getFilmByIdAsync,
-    getFilmByIdRequest,
-    getFilmByIdSuccess,
-    getFilmByKeyWordAsync,
-    getFilmByKeyWordRequest,
-    getFilmByKeyWordSuccess,
-    postLoginAsync, postLoginError,
-    postLoginRequest,
-    postLoginSuccess,
-    postRegistrationAsync, postRegistrationError,
-    postRegistrationRequest, postRegistrationSuccess
+    fetchFilmByIdAction, fetchFilmByKeyWordAction, getPurchasedTicketsAction,
+    postLoginAction, postRegistrationAction, getBuyTicketsAction
 } from "../actions";
-import { userLogin, userRegistration } from "../services/user-api";
+import { buyTicket, purchasedTickets, userLogin, userRegistration } from "../services/user-api";
 
 const kinopoiskService = new KinopoiskService();
 
-function* fetchFilmByIdWorker(id) {
-    yield put({type: getFilmByIdRequest})
-    const film = yield kinopoiskService.getFilmById(id.id);
-    yield put({type: getFilmByIdSuccess, film})
+function* fetchFilmByIdWorker({payload}) {
+    console.log(payload)
+    const film = yield kinopoiskService.getFilmById(payload);
+    yield put(fetchFilmByIdAction.success(film))
 }
 
-function* fetchFilmByKeyWord(value) {
-    yield put({type: getFilmByKeyWordRequest});
-    const films = yield kinopoiskService.getFilmsByKeyWord(value.value);
-    yield put({type: getFilmByKeyWordSuccess, films});
-}
-
-function* fetchLoginWorker (data) {
-    yield put({type: postLoginRequest})
-    const userInfo =  yield userLogin(data.user.email, data.user.password)
-    if (userInfo.token) {
-        yield put({type: postLoginSuccess, userInfo})
-    } else {
-        yield put({type:postLoginError, userInfo})
+function* fetchFilmByKeyWord({ payload }) {
+    try {
+        const films = yield kinopoiskService.getFilmsByKeyWord(payload.value);
+        yield put(fetchFilmByKeyWordAction.success(films));
+    } catch (e) {
+        console.log(e)
     }
 }
 
-function* fetchRegistrationWorker (data) {
-    const {user} = data;
-    const { firstName, lastName, email, password } = user;
-    yield put({type: postRegistrationRequest})
+function* fetchLoginWorker ({ payload }) {
+    const {email, password} = payload;
+    try {
+        const userInfo =  yield call(userLogin, email, password)
+        yield put(postLoginAction.success(userInfo))
+    } catch (e) {
+        yield put(postLoginAction.error(e));
+    }
+}
+
+function* fetchRegistrationWorker ({ payload }) {
+    const { firstName, lastName, email, password } = payload;
     const userInfo = yield userRegistration(firstName, lastName, email, password)
     if (userInfo.token) {
-        yield put({type: postRegistrationSuccess, userInfo})
+        yield put(postRegistrationAction.success(userInfo))
+        yield put(postLoginAction.success(userInfo))
     } else {
-        yield put({type: postRegistrationError, userInfo})
+        yield put(postRegistrationAction.error(userInfo))
     }
 }
 
+function* postPurchasedTicketsAction ({payload}) {
+    try {
+        const ticket =  yield call(purchasedTickets, payload.filmId, payload.token);
+        yield put(getPurchasedTicketsAction.success(ticket));
+    } catch (e) {
+        yield put(getPurchasedTicketsAction.error())
+    }
+}
+
+function* getBuyTickets({payload}) {
+    console.log("payload12", payload)
+    try {
+        const response = yield call(buyTicket, payload.filmId ,payload.selectedPlaceNumber, payload.token)
+        yield put(getBuyTicketsAction.success())
+        console.log(response)
+    } catch (e) {
+
+    }
+}
 
 export default function* rootFilmsWatcher () {
-    yield takeEvery(getFilmByIdAsync, fetchFilmByIdWorker)
-    yield takeEvery(getFilmByKeyWordAsync, fetchFilmByKeyWord)
-    yield takeEvery(postLoginAsync, fetchLoginWorker)
-    yield takeEvery(postRegistrationAsync, fetchRegistrationWorker)
+    yield takeEvery(fetchFilmByIdAction.request, fetchFilmByIdWorker)
+    yield takeEvery(fetchFilmByKeyWordAction.request, fetchFilmByKeyWord)
+    yield takeEvery(postLoginAction.request, fetchLoginWorker)
+    yield takeEvery(postRegistrationAction.request, fetchRegistrationWorker)
+    yield takeEvery(getPurchasedTicketsAction.request, postPurchasedTicketsAction)
+    yield takeEvery(getBuyTicketsAction.request, getBuyTickets)
 }
 

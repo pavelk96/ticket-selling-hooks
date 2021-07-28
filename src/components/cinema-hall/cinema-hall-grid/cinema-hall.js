@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import OnePlace from "../one-place/one-place";
 import screen from "../../../img/screen.png";
 import "./cinema-hall.sass"
+import { useDispatch } from "react-redux";
+import { getBuyTicketsAction, getPurchasedTicketsAction } from "../../../actions";
 
-function CinemaHall() {
+function CinemaHall(props) {
 
-
-    const [modal, setModal] = useState(false)
+    const dispatch = useDispatch();
+    const [selectedPlace, setSelectedPlace] = useState([]);
+    const handleButTicket = () => {
+        dispatch(getBuyTicketsAction.request({ id: props.id, selectedPlaceNumber:selectedPlace, token: localStorage.getItem("token") }))
+    }
 
     useEffect( () => {
-        //Запрос купленных билетов
-    })
+        dispatch(getPurchasedTicketsAction.request({ filmId: props.id, token: localStorage.getItem("token") }))
+    },[])
 
     const renderHallGrid = () => {
         let gridArr = [];
@@ -22,7 +27,10 @@ function CinemaHall() {
                     ...placeArr, <OnePlace key={place}
                                            occupiedPlace={place}
                                            place={n.toString()}
-                                           placeId={place}/>
+                                           placeId={place}
+                                           setSelectedPlace={setSelectedPlace}
+                                           selectedPlace={selectedPlace}
+                    />
                 ];
             }
             gridArr = [...gridArr,<div className="hall-line" key={i}>Ряд: {i}{placeArr}</div> ]
@@ -37,8 +45,7 @@ function CinemaHall() {
             <div className="cinema-hall-grid">
                 {renderHallGrid()}
             </div>
-            {modal ? modal : null}
-            <button className="cinema-hall-ticket-button" onClick={() => setModal(!modal)}>Купить выбранные билеты</button>
+            <button className="cinema-hall-ticket-button" onClick={handleButTicket} >Купить выбранные билеты</button>
         </div>
     );
 }

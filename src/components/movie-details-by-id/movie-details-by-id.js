@@ -2,24 +2,29 @@ import React from "react";
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import "./movie-details-by-id.sass";
-import { getFilmByIdAsync } from "../../actions";
+import { fetchFilmByIdAction } from "../../actions";
 import Spinner from "../spinner/spinner";
+import { useHistory } from "react-router-dom";
 
 
 
 function MovieDetailsById({ id }) {
-
+    const history = useHistory();
     const dispatch = useDispatch()
     const filmDataId = useSelector(state => state.filmDataId)
     const isLoadingFilmDataId = useSelector(state => state.false)
 
     useEffect(() =>{
-        dispatch({type: getFilmByIdAsync, id})
+        dispatch(fetchFilmByIdAction.request(id))
     },[dispatch])
 
-    const {nameRu, filmId, posterUrl, webUrl, year, filmLength, slogan,
-        description, type, ratingMpaa, ratingAgeLimits, premiereRu, distributors,
+    const {nameRu,  posterUrl,  year, filmLength, slogan,
+        description,  ratingMpaa, ratingAgeLimits, premiereRu,
         premiereWorld, countries, genres } = filmDataId
+
+    const byuTicketButton = () => {
+        history.push(`/buy-ticket/${id}`)
+    }
 
     return (
         <>
@@ -46,7 +51,7 @@ function MovieDetailsById({ id }) {
                         {description}
                     </p>
                     <div className="movie-details-btn">
-                        <button>Купить билет</button>
+                        <button onClick={byuTicketButton}>Купить билет</button>
                         <button>Добавить в избранное</button>
                     </div>
                 </div>

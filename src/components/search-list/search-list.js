@@ -1,12 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./search-list.sass"
 import Spinner from "../spinner/spinner";
 
 function SearchList() {
     const history = useHistory();
-    const dispatch = useDispatch()
     const filmDataSearch = useSelector(state => state.filmDataSearch)
     const isLoadingFilmDataSearch = useSelector(state => state.isLoadingFilmDataSearch)
 

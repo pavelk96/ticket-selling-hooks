@@ -3,23 +3,24 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./search.sass"
-import { getFilmByKeyWordAsync } from "../../../actions";
+import { fetchFilmByKeyWordAction } from "../../../actions";
 
 function Search() {
     const dispatch = useDispatch();
     let history = useHistory();
     const [ searchValue, setSearchValue ] = useState("")
 
-    const handleSearch = (value) => {
+    const handleSearch = (e) => {
+        const value = e.target.value;
         setSearchValue(value)
-        dispatch({type: getFilmByKeyWordAsync, value})
-        history.push("/search")
+        dispatch(fetchFilmByKeyWordAction.request({value}))
+        if (history.location.pathname !== "/search") {
+            history.push("/search")
+        }
     }
 
-    console.log(searchValue)
-
     return (
-            <input value={searchValue} onChange={(e) => handleSearch(e.target.value)} placeholder="Search"/>
+            <input value={searchValue} onChange={handleSearch} placeholder="Search"/>
     );
 }
 

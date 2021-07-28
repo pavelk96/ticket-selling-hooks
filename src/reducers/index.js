@@ -1,4 +1,5 @@
 
+
 const initialState = {
     filmDataId: {},
     filmDataSearch: [{}],
@@ -14,6 +15,12 @@ const initialState = {
         isLoadingLogin: false,
         isLoadingRegistration: false
     },
+    purchasedTickets: [
+        {
+            filmId: "",
+            ticket: []
+        }
+    ],
     errorAuth: "",
     errorRegistration:""
 };
@@ -22,33 +29,33 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
 
-        case `GET_FILM_BY_ID_REQUEST`:
+        case `GET_FILM_BY_ID.REQUEST`:
             return {
                 ...state,
                 isLoadingFilmDataId: true
             }
 
-        case `GET_FILM_BY_ID_SUCCESS`:
+        case `GET_FILM_BY_ID.SUCCESS`:
             return {
                 ...state,
                 isLoadingFilmDataId: false,
-                filmDataId: action.film.data
+                filmDataId: action.payload.data
             }
 
-        case `GET_FILM_BY_KEY_WORD_REQUEST`:
+        case `GET_FILM_BY_KEY_WORD.REQUEST`:
             return {
                 ...state,
                 isLoadingFilmDataSearch: true
             }
 
-        case `GET_FILM_BY_KEY_WORD_SUCCESS`:
+        case `GET_FILM_BY_KEY_WORD.SUCCESS`:
             return {
                 ...state,
                 isLoadingFilmDataSearch: false,
-                filmDataSearch: action.films.films
+                filmDataSearch: action.payload.films
             }
 
-        case 'POST_LOGIN_REQUEST' :
+        case 'POST_LOGIN.REQUEST' :
             return {
                 ...state,
                 user: {
@@ -56,28 +63,32 @@ const reducer = (state = initialState, action) => {
                 }
             }
 
-        case 'POST_LOGIN_SUCCESS' :
-            console.log(action)
-
-            if (action.userInfo.token) {
-                localStorage.setItem("token", action.userInfo.token)
+        case 'POST_LOGIN.SUCCESS' :
+            if (action.payload.token) {
+                localStorage.setItem("token", action.payload.token)
             }
             return {
                 ...state,
                 user: {
-                    token: action.userInfo.token,
-                    lastName: action.userInfo.user.firstName,
-                    firstName: action.userInfo.user.lastName,
-                    email: action.userInfo.user.email,
+                    ...state.user,
+                    token: action.payload.token,
+                    lastName: action.payload.user?.lastName,
+                    firstName: action.payload.user?.firstName,
+                    email: action.payload.user?.email,
                     isAuth: true,
                     isLoadingLogin: false
                 }
             }
 
-        case "POST_LOGIN_ERROR" :
+        case "POST_LOGIN.ERROR" :
+            console.log("action", action)
             return {
                 ...state,
-                errorAuth: action.userInfo.message
+                errorAuth: action.payload.message,
+                user: {
+                    ...state.user,
+                    isLoadingLogin: false
+                }
             }
 
         case 'POST_REGISTRATION_REQUEST' :
@@ -131,6 +142,35 @@ const reducer = (state = initialState, action) => {
                     isAuth: false
                 }
             }
+
+        case "GET_PURCHASED_TICKETS.REQUEST":
+            console.log(action)
+            return state
+
+        case "GET_PURCHASED_TICKETS.SUCCESS":
+            console.log("action3", action)
+            const newFilm = {
+                filmId: action.payload.filmId,
+                ticket: action.payload.placesTaken
+            }
+            return {
+                ...state,
+                purchasedTickets: [...state.purchasedTickets, newFilm]
+
+            }
+
+        case "GET_PURCHASED_TICKETS.ERROR":
+            return state
+
+        case "GET_BUY_TICKETS.REQUEST":
+            console.log(action)
+            return state
+        case "GET_BUY_TICKETS.SUCCESS":
+            console.log(action)
+            return state
+        case "GET_BUY_TICKETS.ERROR":
+            console.log(action)
+            return state
         default:
             return state;
     }

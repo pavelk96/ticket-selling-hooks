@@ -4,7 +4,7 @@ export default class KinopoiskService {
     _apiKeyWord = "search-by-keyword?keyword=";
 
     getFilm = async (request) => {
-        return await new Promise((resolve) => {
+        return await new Promise((resolve, reject) => {
                 fetch(`${this._apiBase}${request}`, {
                     headers: {
                         'X-API-KEY': '312e0cda-065d-48f5-9ff8-12be8a5e44e4',
@@ -16,7 +16,11 @@ export default class KinopoiskService {
                     })
                     .then((data) => {
                         return resolve(data);
-                    });
+                    })
+                    .catch(() => {
+                        return reject(new Error("error"))
+                    })
+
             }
         )
     };

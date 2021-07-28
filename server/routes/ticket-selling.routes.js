@@ -46,10 +46,10 @@ router.post(
     '/request-tickets',
     async (req, res) => {
         try {
-            const {filmId} = req.body;
-            const candidateFilm = await Film.findOne({filmId})
+            const {id} = req.body;
+            const candidateFilm = await Film.findOne({filmId: id})
             if (candidateFilm) {
-                res.status(200).json({candidateFilm})
+                res.status(200).json({filmId: candidateFilm.filmId, placesTaken:candidateFilm.placesTaken})
             } else {
                 res.status(201).json({message: "Билеты на фильм еще не покупались"})
             }
